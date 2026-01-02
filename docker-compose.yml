@@ -1,0 +1,40 @@
+version: "3.9"
+
+services:
+  mongodb:
+    image: mongo:6
+    container_name: asyncsaas-mongo
+    volumes:
+      - mongo_data:/data/db
+
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: asyncsaas-rabbitmq
+
+  api:
+    build: ./api
+    container_name: asyncsaas-api
+    ports:
+      - "4000:4000"
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/asyncsaas
+      RABBITMQ_URL: amqp://rabbitmq
+      JWT_SECRET: supersecretkey
+      NODE_ENV: production
+
+  worker:
+    build: ./worker
+    container_name: asyncsaas-worker
+    depends_on:
+      - mongodb
+      - rabbitmq
+    environment:
+      MONGO_URI: mongodb://mongodb:27017/asyncsaas
+      RABBITMQ_URL: amqp://rabbitmq
+
+volumes:
+  mongo_data:

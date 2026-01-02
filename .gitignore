@@ -1,0 +1,16 @@
+# Node
+node_modules/
+
+# Python
+venv/
+__pycache__/
+
+# Env
+.env
+.env.*
+
+# Docker
+mongo_data/
+
+# OS
+.DS_Store
